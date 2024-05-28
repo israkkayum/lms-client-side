@@ -1,50 +1,77 @@
-import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import { useState } from "react";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import ReactHelmet from "../../components/ReactHelmet/ReactHelmet";
+import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
 
 export default function Login() {
   const {
     register,
     handleSubmit,
+    watch,
     reset,
     // formState: { errors },
   } = useForm();
 
+  const { resetPassword } = useAuth();
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
 
-  const onSubmit = (data) => {
-    // console.log(data);
-    signIn(data.email, data.password).then((result) => {
-      console.log(result.user);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      await signIn(data.email, data.password);
       navigate(from, { replace: true });
-    });
-    reset();
+    } catch (error) {
+      setMessage(
+        "Email or password incorrect! Please try again." || error.message
+      );
+    } finally {
+      reset();
+      setLoading(false);
+    }
   };
+
+  const handleResetPassword = async (email) => {
+    if (!email) {
+      setMessage("Please enter your email to reset your password.");
+      return;
+    }
+
+    try {
+      await resetPassword(email);
+      setMessage("Password reset email sent. Please check your inbox.");
+    } catch (error) {
+      setMessage(
+        error.message || "Failed to reset password. Please try again."
+      );
+    }
+  };
+
+  const emailValue = watch("email");
 
   return (
     <>
-      <Helmet>
-        <title>LMS|| Login</title>
-      </Helmet>
-      {/* Pages: Sign In: Boxed */}
+      <ReactHelmet title={"LMS - Login"}></ReactHelmet>
 
-      {/* Page Container */}
       <div
         id="page-container"
         className="mx-auto flex min-h-dvh w-full min-w-[320px] flex-col bg-gray-200 dark:bg-gray-100 dark:text-gray-800"
       >
-        {/* Page Content */}
         <main id="page-content" className="flex max-w-full flex-auto flex-col">
           <div className="relative mx-auto flex min-h-dvh w-full max-w-10xl items-center justify-center overflow-hidden p-4 lg:p-8">
-            {/* Sign In Section */}
             <section className="w-full max-w-xl py-6">
-              {/* Header */}
               <header className="mb-10 text-center">
                 <h1 className="mb-2 inline-flex items-center gap-2 text-2xl font-bold">
                   <span>Sign in to your account</span>
@@ -53,11 +80,10 @@ export default function Login() {
                   Welcome, please sign in to your dashboard
                 </h2>
               </header>
-              {/* END Header */}
 
-              {/* Sign In Form */}
               <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-sm dark:bg-white-800">
                 <div className="grow p-5 md:px-16 md:py-12">
+                  {message && <ErrorMessage message={message}></ErrorMessage>}
                   <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div>
                       <label
@@ -87,6 +113,14 @@ export default function Login() {
                         >
                           Password
                         </label>
+                        <div className="text-sm">
+                          <NavLink
+                            onClick={() => handleResetPassword(emailValue)}
+                            className="text-indigo-600 hover:text-indigo-500"
+                          >
+                            Forgot password?
+                          </NavLink>
+                        </div>
                       </div>
                       <div className="mt-2">
                         <input
@@ -103,13 +137,17 @@ export default function Login() {
                       </div>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Sign in
-                    </button>
-                    {/* Divider: With Label */}
+                    {loading ? (
+                      <ButtonSpinner></ButtonSpinner>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Sign in
+                      </button>
+                    )}
+
                     <div className="my-5 flex items-center">
                       <span
                         aria-hidden="true"
@@ -123,8 +161,11 @@ export default function Login() {
                         className="h-0.5 grow rounded bg-gray-200 dark:bg-gray-100"
                       />
                     </div>
-                    {/* END Divider: With Label */}
-                    <SocialLogin></SocialLogin>
+
+                    <SocialLogin
+                      setLoading={setLoading}
+                      setMessage={setMessage}
+                    ></SocialLogin>
                   </form>
                 </div>
                 <div className="grow bg-gray-100 p-5 text-center text-sm dark:bg-gray-50 md:px-16">
@@ -137,16 +178,10 @@ export default function Login() {
                   </NavLink>
                 </div>
               </div>
-              {/* END Sign In Form */}
             </section>
-            {/* END Sign In Section */}
           </div>
         </main>
-        {/* END Page Content */}
       </div>
-      {/* END Page Container */}
-
-      {/* END Pages: Sign In: Boxed */}
     </>
   );
 }

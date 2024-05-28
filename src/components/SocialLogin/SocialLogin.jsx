@@ -2,37 +2,53 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 
-const SocialLogin = () => {
+const SocialLogin = ({ setLoading, setMessage }) => {
   const { googleSignIn, facebookSignIn } = useAuth();
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
-  const handleGoogleSignIn = () => {
-    googleSignIn().then((result) => {
-      //   console.log(result.user);
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const result = await googleSignIn();
       const userInfo = {
         email: result.user?.email,
         name: result.user?.displayName,
       };
-      axiosPublic.post("/users", userInfo).then((res) => {
-        console.log(res.data);
-        navigate("/");
-      });
-    });
+      const res = await axiosPublic.post("/users", userInfo);
+      console.log(res.data);
+      navigate("/");
+    } catch (error) {
+      setMessage(
+        error.message || "Failed to sign in with Google. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleFacebookSignIn = () => {
-    facebookSignIn().then((result) => {
-      console.log(result.user);
+  const handleFacebookSignIn = async () => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const result = await facebookSignIn();
       const userInfo = {
         email: result.user?.email,
         name: result.user?.displayName,
       };
-      axiosPublic.post("/users", userInfo).then((res) => {
-        console.log(res.data);
-        navigate("/");
-      });
-    });
+      const res = await axiosPublic.post("/users", userInfo);
+      console.log(res.data);
+      navigate("/");
+    } catch (error) {
+      setMessage(
+        error.message || "Failed to sign in with Facebook. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

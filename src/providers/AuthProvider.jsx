@@ -3,8 +3,10 @@ import {
   FacebookAuthProvider,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  deleteUser,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -55,6 +57,15 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  const deleteUserAccount = () => {
+    const user = auth.currentUser;
+    return deleteUser(user);
+  };
+
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -88,6 +99,8 @@ const AuthProvider = ({ children }) => {
     logOut,
     googleSignIn,
     facebookSignIn,
+    deleteUserAccount,
+    resetPassword,
   };
 
   return (

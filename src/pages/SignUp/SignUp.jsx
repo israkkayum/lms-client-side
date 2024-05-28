@@ -1,9 +1,12 @@
-import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
+import ReactHelmet from "../../components/ReactHelmet/ReactHelmet";
+import { useState } from "react";
+import ButtonSpinner from "../../components/ButtonSpinner/ButtonSpinner";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 export default function SignUp() {
   const axiosPublic = useAxiosPublic();
@@ -15,39 +18,68 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
 
-  const { createUser, updateUserProfile } = useAuth();
+  const { createUser, updateUserProfile, user, deleteUserAccount } = useAuth();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    createUser(data.email, data.password).then(() => {
-      // const loggedUser = result.user;
-      // console.log(loggedUser);
-      updateUserProfile(data.name)
-        .then(() => {
-          const userInfo = {
-            name: data.name,
-            email: data.email,
-          };
-          axiosPublic.post("/users", userInfo).then((res) => {
-            if (res.data.insertedId) {
-              reset();
-              navigate("/");
-            }
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    try {
+      // Create user account
+      await createUser(data.email, data.password);
+
+      // Update user profile
+      await updateUserProfile(data.name);
+
+      // Prepare user info for the API request
+      const userInfo = {
+        name: data.name,
+        email: data.email,
+      };
+
+      // Send user info to the backend
+      const response = await axiosPublic.post("/users", userInfo);
+
+      if (response.data.insertedId) {
+        navigate("/");
+      } else {
+        setMessage("Account created, but failed to save additional details.");
+        await deleteUserAccount(); // Remove the created account from Firebase
+      }
+    } catch (error) {
+      // Differentiate errors
+      if (error.message.includes("email")) {
+        setMessage("An account with this email already exists!");
+      } else if (error.response && error.response.status >= 500) {
+        setMessage(
+          "Account created, but failed to save additional details due to a server error."
+        );
+      } else {
+        setMessage(error.message || "An unexpected error occurred.");
+      }
+
+      // If the user was created, delete the account
+      if (user) {
+        try {
+          await deleteUserAccount();
+        } catch (deleteError) {
+          setMessage("Failed to clean up the created account after an error.");
+        }
+      }
+    } finally {
+      reset();
+      setLoading(false);
+    }
   };
 
   const password = watch("password");
 
   return (
     <>
-      <Helmet>
-        <title>Create an Account || LMS</title>
-      </Helmet>
+      <ReactHelmet title={"LMS - Sign Up"}></ReactHelmet>
       {/* Pages: Sign In: Boxed */}
 
       {/* Page Container */}
@@ -74,6 +106,7 @@ export default function SignUp() {
               {/* Sign In Form */}
               <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-sm dark:bg-white-800">
                 <div className="grow p-5 md:px-16 md:py-12">
+                  {message && <ErrorMessage message={message}></ErrorMessage>}
                   <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div>
                       <label
@@ -217,12 +250,16 @@ export default function SignUp() {
                       </div>
                     )}
 
-                    <button
-                      type="submit"
-                      className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Register
-                    </button>
+                    {loading ? (
+                      <ButtonSpinner></ButtonSpinner>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Register
+                      </button>
+                    )}
                     {/* Divider: With Label */}
                     <div className="my-5 flex items-center">
                       <span
@@ -238,7 +275,10 @@ export default function SignUp() {
                       />
                     </div>
                     {/* END Divider: With Label */}
-                    <SocialLogin></SocialLogin>
+                    <SocialLogin
+                      setLoading={setLoading}
+                      setMessage={setMessage}
+                    ></SocialLogin>
                   </form>
                 </div>
                 <div className="grow bg-gray-100 p-5 text-center text-sm dark:bg-gray-50 md:px-16">
