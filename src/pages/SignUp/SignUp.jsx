@@ -194,13 +194,11 @@ export default function SignUp() {
                               Ensure that these requirements are met:
                             </span>
                             <ul className="mt-1.5 list-disc list-inside">
-                              <li>At least 8 length password</li>
-                              <li>At least one uppercase character</li>
-                              <li>At least one lowercase character</li>
-                              <li>At least one digit</li>
-                              <li>
-                                Inclusion of at least one special character
-                              </li>
+                              <li>Be at least 8 characters long</li>
+                              <li>Include at least one uppercase letter</li>
+                              <li>Include at least one lowercase letter</li>
+                              <li>Include at least one digit</li>
+                              <li>Include at least one special character</li>
                             </ul>
                           </div>
                         </div>
