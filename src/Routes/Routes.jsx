@@ -6,14 +6,20 @@ import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
 import MyLearning from "../Layout/MyLearning";
 import SettingsHome from "../pages/Settings/SettingsHome/SettingsHome";
+import PageNotFound from "../pages/Shared/PageNotFound/PageNotFound";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
+    errorElement: <PageNotFound />,
     children: [
       {
         path: "/",
+        element: <Home></Home>,
+      },
+      {
+        path: "home",
         element: <Home></Home>,
       },
       {
@@ -35,4 +41,8 @@ export const router = createBrowserRouter([
     element: <MyLearning></MyLearning>,
     children: [],
   },
+  // {
+  //   path: "*",
+  //   element: <PageNotFound></PageNotFound>,
+  // },
 ]);

@@ -6,6 +6,7 @@ import {
   deleteUser,
   getAuth,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -66,6 +67,13 @@ const AuthProvider = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const emailVerification = () => {
+    sendEmailVerification(auth.currentUser).then(() => {
+      // Email verification sent!
+      // ...
+    });
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -101,6 +109,7 @@ const AuthProvider = ({ children }) => {
     facebookSignIn,
     deleteUserAccount,
     resetPassword,
+    emailVerification,
   };
 
   return (

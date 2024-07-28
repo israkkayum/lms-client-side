@@ -3,25 +3,26 @@ import { Container } from "@mui/system";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import useAuth from "../../../hooks/useAuth";
-
 import { Alert } from "@mui/material";
 import ProfilePicChange from "../ProfilePicChange/ProfilePicChange";
 import DeleteAccount from "../DeleteAccount/DeleteAccount";
 import Spinner from "../../Shared/Spinner/Spinner";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
+import useProfile from "../../../hooks/useProfile";
+import useAuth from "../../../hooks/useAuth";
+import SettingsProfile from "../SettingsProfile/SettingsProfile";
 
 const SettingsHome = () => {
   const { user, emailVerification, deleteUserAccount } = useAuth();
+  const [profile, isLoading] = useProfile();
   const [message, setMessage] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [tempAvatar, setTempAvatar] = useState(null);
   const [successMessage, setSuccessMessage] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const axiosSecure = useAxiosSecure();
   const axiosPublic = useAxiosPublic();
   const queryClient = useQueryClient();
 
@@ -71,24 +72,36 @@ const SettingsHome = () => {
   };
 
   const handleDeleteUser = async (id) => {
+    setIsDeleting(true);
     try {
-      await axiosSecure.delete(`/users/${id}`);
-      deleteUserAccount();
-      window.location.reload();
+      // Delete user from Firebase Authentication
+      await deleteUserAccount();
+
+      // Delete user from the database
+      await axiosPublic.delete(`/users/${id}`);
     } catch (error) {
       console.error("Error deleting user account:", error);
+      alert("Failed to delete user account");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  const { data: profile = [], isLoading } = useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/users/${user?.email}`);
-      return res.data;
-    },
-  });
+  const handleProfileTypeChange = async () => {
+    try {
+      const response = await axiosPublic.put("/users/profile-type", {
+        email: user?.email,
+        profileType: profile?.profileType == "student" ? "teacher" : "student",
+      });
+      if (response.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
-  // console.log(profile);
+  // console.log(user);
 
   if (isLoading) {
     return <Spinner />;
@@ -145,7 +158,7 @@ const SettingsHome = () => {
                         <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
                           <p className="text-sm leading-6 text-gray-900">
                             <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                              {profile.status}
+                              {profile.profileType}
                             </span>
                           </p>
                         </div>
@@ -154,19 +167,24 @@ const SettingsHome = () => {
                         <div className="flex min-w-0 gap-x-4">
                           <div className="min-w-0 flex-auto">
                             <p className="text-sm font-semibold leading-6 text-gray-900">
-                              Profile status
+                              Switch role to...
                             </p>
                           </div>
                         </div>
                         <div className=" shrink-0 sm:flex sm:flex-col sm:items-end">
                           <p className="text-sm leading-6 text-gray-900">
-                            {profile?.phoneNumber ? (
-                              <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                completed
+                            {user?.emailVerified ? (
+                              <span
+                                onClick={handleProfileTypeChange}
+                                className="inline-flex items-center rounded-md bg-indigo-600 px-2 py-1 text-xs font-small text-white ring-1 ring-inset ring-pink-700/10 ml-2 cursor-pointer"
+                              >
+                                {profile.profileType == "teacher"
+                                  ? "student"
+                                  : "teacher"}
                               </span>
                             ) : (
                               <span className="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-pink-700/10">
-                                incomplete
+                                Email verification required
                               </span>
                             )}
                           </p>
@@ -182,7 +200,7 @@ const SettingsHome = () => {
                         </div>
                         <div className=" shrink-0 sm:flex sm:flex-col sm:items-end">
                           <p className="text-sm leading-6 text-gray-900">
-                            {profile?.emailVerified ? (
+                            {user?.emailVerified ? (
                               <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                 verified
                               </span>
@@ -193,7 +211,7 @@ const SettingsHome = () => {
                                 </span>
                                 <span
                                   onClick={handleEmailVerification}
-                                  className="inline-flex items-center rounded-md bg-blue-600 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-pink-700/10 ml-2 cursor-pointer"
+                                  className="inline-flex items-center rounded-md bg-indigo-600 px-2 py-1 text-xs font-small text-white ring-1 ring-inset ring-pink-700/10 ml-2 cursor-pointer"
                                 >
                                   verify
                                 </span>
@@ -202,30 +220,7 @@ const SettingsHome = () => {
                           </p>
                         </div>
                       </li>
-                      {profile.status == "physician" && (
-                        <li className="flex justify-between gap-x-6 py-5">
-                          <div className="flex min-w-0 gap-x-4">
-                            <div className="min-w-0 flex-auto">
-                              <p className="text-sm font-semibold leading-6 text-gray-900">
-                                Approval
-                              </p>
-                            </div>
-                          </div>
-                          <div className=" shrink-0 sm:flex sm:flex-col sm:items-end">
-                            <p className="text-sm leading-6 text-gray-900">
-                              {profile?.certificates ? (
-                                <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                  approved
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-pink-700/10">
-                                  certificate not found
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                        </li>
-                      )}
+
                       <li className="flex justify-between gap-x-6 py-5">
                         <div className="flex min-w-0 gap-x-4">
                           <div className="min-w-0 flex-auto">
@@ -237,7 +232,8 @@ const SettingsHome = () => {
                         <div className=" shrink-0 sm:flex sm:flex-col sm:items-end">
                           <DeleteAccount
                             key={profile._id}
-                            profile={user}
+                            profile={profile}
+                            isDeleting={isDeleting}
                             handleDeleteUser={handleDeleteUser}
                           />
                         </div>
@@ -260,17 +256,7 @@ const SettingsHome = () => {
                   }}
                 >
                   <Paper elevation={3}>
-                    {/* {profile.status == "physician" ? (
-                      <SettingsPhysicianProfile
-                        key={profile._id}
-                        profile={profile}
-                      ></SettingsPhysicianProfile>
-                    ) : (
-                      <SettingsPatientProfile
-                        key={profile._id}
-                        profile={profile}
-                      ></SettingsPatientProfile>
-                    )} */}
+                    <SettingsProfile profile={profile}></SettingsProfile>
                   </Paper>
                 </Box>
               </Grid>

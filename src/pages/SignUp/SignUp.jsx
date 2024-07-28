@@ -38,6 +38,7 @@ export default function SignUp() {
       const userInfo = {
         name: data.name,
         email: data.email,
+        profileType: "student",
       };
 
       // Send user info to the backend

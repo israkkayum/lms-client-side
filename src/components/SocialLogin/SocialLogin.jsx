@@ -16,6 +16,7 @@ const SocialLogin = ({ setLoading, setMessage }) => {
       const userInfo = {
         email: result.user?.email,
         name: result.user?.displayName,
+        profileType: "student",
       };
       const res = await axiosPublic.post("/users", userInfo);
       console.log(res.data);
@@ -38,6 +39,7 @@ const SocialLogin = ({ setLoading, setMessage }) => {
       const userInfo = {
         email: result.user?.email,
         name: result.user?.displayName,
+        profileType: "student",
       };
       const res = await axiosPublic.post("/users", userInfo);
       console.log(res.data);
