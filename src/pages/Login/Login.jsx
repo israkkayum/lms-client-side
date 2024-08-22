@@ -171,7 +171,7 @@ export default function Login() {
                 <div className="grow bg-gray-100 p-5 text-center text-sm dark:bg-gray-50 md:px-16">
                   Don’t have an account yet?{" "}
                   <NavLink
-                    to="/signup"
+                    to="/register"
                     className="font-medium text-indigo-600 hover:text-indigo-400"
                   >
                     Sign up

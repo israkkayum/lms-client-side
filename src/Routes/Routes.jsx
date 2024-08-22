@@ -27,11 +27,11 @@ export const router = createBrowserRouter([
         element: <Login></Login>,
       },
       {
-        path: "signup",
+        path: "register",
         element: <SignUp></SignUp>,
       },
       {
-        path: "settings",
+        path: "profile-settings",
         element: <PrivateRoute>{<SettingsHome></SettingsHome>}</PrivateRoute>,
       },
     ],

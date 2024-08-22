@@ -9,6 +9,7 @@ import {
 import { NavLink } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import useProfile from "../../../../hooks/useProfile";
+import NewSiteCreate from "../../../../components/NewSiteCreate/NewSiteCreate";
 
 const navigation = {
   pages: [
@@ -27,6 +28,7 @@ const Navbar = () => {
   const { user, logOut } = useAuth();
   const [profile] = useProfile();
   const [open, setOpen] = useState(false);
+  const [showNewSiteCreate, setShowNewSiteCreate] = useState(false);
 
   const handleLogOut = () => {
     logOut()
@@ -40,6 +42,12 @@ const Navbar = () => {
 
   return (
     <div className="bg-white">
+      {showNewSiteCreate && (
+        <NewSiteCreate
+          profile={profile}
+          setShowNewSiteCreate={setShowNewSiteCreate}
+        />
+      )}
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog className="relative z-40 lg:hidden" onClose={setOpen}>
@@ -144,7 +152,10 @@ const Navbar = () => {
                 {user?.email ? (
                   <div className="absolute inset-y-0 space-x-4 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     {profile?.profileType == "teacher" ? (
-                      <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700">
+                      <button
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700"
+                        onClick={() => setShowNewSiteCreate(true)}
+                      >
                         <PlusIcon class="h-5 w-5 text-white" />
                         New Site
                       </button>
@@ -197,56 +208,46 @@ const Navbar = () => {
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           <Menu.Item>
                             {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
+                              <div>
+                                {profile?.profileType == "teacher" ? (
+                                  <NavLink
+                                    to="/my-sites"
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    My Sites
+                                  </NavLink>
+                                ) : (
+                                  <NavLink
+                                    to="/"
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    My Institutions
+                                  </NavLink>
                                 )}
-                              >
-                                My Institutions
-                              </a>
+                              </div>
                             )}
                           </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                My Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <NavLink
-                                to="/settings"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Edit Profile
-                              </NavLink>
-                            )}
-                          </Menu.Item>
+
                           <Menu.Item>
                             {({ active }) => (
                               <NavLink
-                                to="/settings"
+                                to="/profile-settings"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700"
                                 )}
                               >
-                                Account Settings
+                                Profile & Settings
                               </NavLink>
                             )}
                           </Menu.Item>
+
                           <Menu.Item>
                             {({ active }) => (
                               <NavLink
@@ -265,7 +266,7 @@ const Navbar = () => {
                     </Menu>
                   </div>
                 ) : (
-                  <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                  <div className="flex flex-1 items-center justify-end space-x-6">
                     <NavLink
                       to="/login"
                       className="text-sm font-medium text-gray-700 hover:text-gray-800"
@@ -274,7 +275,7 @@ const Navbar = () => {
                     </NavLink>
                     <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
                     <NavLink
-                      to="/signup"
+                      to="/register"
                       className="text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Create account

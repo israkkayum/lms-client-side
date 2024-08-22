@@ -13,6 +13,7 @@ const useProfile = () => {
       const res = await axiosSecure.get(`/users/${user?.email}`);
       return res.data;
     },
+    enabled: !!user?.email, // Only enable this query if user.email exists
   });
 
   return [profile, isLoading];
