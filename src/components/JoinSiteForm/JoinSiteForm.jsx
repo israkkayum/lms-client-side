@@ -6,8 +6,10 @@ import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ButtonSpinner from "../ButtonSpinner/ButtonSpinner";
 import { useNavigate } from "react-router-dom";
+import useJoinedSites from "../../hooks/useJoinedSites";
 
 const JoinSiteForm = ({ profile, setShowJoinSiteForm }) => {
+  const [, , refetch] = useJoinedSites();
   const cancelButtonRef = useRef(null);
   const navigate = useNavigate();
 
@@ -39,11 +41,12 @@ const JoinSiteForm = ({ profile, setShowJoinSiteForm }) => {
       });
 
       if (response.status === 200) {
+        refetch();
         setSuccess(true);
         setMessage("Successfully joined the site.");
         setTimeout(() => {
           setShowJoinSiteForm(false);
-          navigate("/my-sites");
+          navigate("/my-institutions");
         }, 1500);
       } else {
         setMessage("Failed to join the site. Please check your credentials.");

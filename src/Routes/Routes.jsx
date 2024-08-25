@@ -8,6 +8,9 @@ import MyLearning from "../Layout/MyLearning";
 import SettingsHome from "../pages/Settings/SettingsHome/SettingsHome";
 import PageNotFound from "../pages/Shared/PageNotFound/PageNotFound";
 import MySites from "../pages/MySites/MySites";
+import MyInstitutions from "../pages/MyInstitutions/MyInstitutions";
+import TeacherRoute from "./TeacherRoute";
+import StudentRoute from "./StudentRoute";
 
 export const router = createBrowserRouter([
   {
@@ -43,7 +46,19 @@ export const router = createBrowserRouter([
         path: "my-sites",
         element: (
           <PrivateRoute>
-            <MySites></MySites>
+            <TeacherRoute>
+              <MySites></MySites>
+            </TeacherRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-institutions",
+        element: (
+          <PrivateRoute>
+            <StudentRoute>
+              <MyInstitutions></MyInstitutions>
+            </StudentRoute>
           </PrivateRoute>
         ),
       },
