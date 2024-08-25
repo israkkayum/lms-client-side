@@ -7,15 +7,15 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ButtonSpinner from "../ButtonSpinner/ButtonSpinner";
 import { useNavigate } from "react-router-dom";
 
-const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
+const JoinSiteForm = ({ profile, setShowJoinSiteForm }) => {
   const cancelButtonRef = useRef(null);
   const navigate = useNavigate();
 
   const email = profile?.email;
-  const date = new Date().toDateString();
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const {
     register,
@@ -26,58 +26,38 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
   } = useForm();
   const axiosPublic = useAxiosPublic();
 
-  //	Generate Random Password Function
-  const generateRandomPassword = (length) => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let password = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      password += characters[randomIndex];
-    }
-    return password;
-  };
-
   const onSubmit = async (data) => {
     setLoading(true);
+    setMessage("");
 
     try {
-      // Check if siteName is available
-      const checkResponse = await axiosPublic.get("/sites/check-site-name", {
-        params: { siteName: data.siteName.toLowerCase() },
+      // Send request to join a site
+      const response = await axiosPublic.post("/sites/join", {
+        siteName: data.siteName.toLowerCase(),
+        password: data.password,
+        email: email,
       });
 
-      // If the site name exists, show the error message
-      if (checkResponse.status === 409) {
-        setMessage("Site name already exists. Please choose another name.");
-        setLoading(false);
-        return;
-      }
-
-      // Generate a unique password with a length of 5-7 characters
-      const passwordLength = Math.floor(Math.random() * 3) + 5;
-      const uniquePassword = generateRandomPassword(passwordLength);
-
-      const siteInfo = {
-        createdBy: email,
-        siteName: data.siteName.toLowerCase(),
-        password: uniquePassword,
-        date: date,
-      };
-
-      // Send site info to the backend
-      const response = await axiosPublic.post("/sites", siteInfo);
-      if (response.data.insertedId) {
-        setShowNewSiteCreate(false);
-        navigate("/profile-settings");
+      if (response.status === 200) {
+        setSuccess(true);
+        setMessage("Successfully joined the site.");
+        setTimeout(() => {
+          setShowJoinSiteForm(false);
+          navigate("/my-sites");
+        }, 1500);
       } else {
-        setMessage("Failed to save site details.");
+        setMessage("Failed to join the site. Please check your credentials.");
       }
     } catch (error) {
-      if (error.response?.status === 409) {
-        setMessage("Site name already exists. Please choose another name.");
+      if (error.response?.status === 404) {
+        setMessage("Site not found.");
+      } else if (error.response?.status === 401) {
+        setMessage("Incorrect password.");
+      } else if (error.response?.status == 400) {
+        setMessage("You are already a member of this site.");
+        // console.log(error.response.data?.message);
       } else {
-        setMessage(error.message || "An unexpected error occurred.");
+        setMessage("An unexpected error occurred.");
       }
     } finally {
       reset();
@@ -86,7 +66,7 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
   };
 
   const siteName = watch("siteName");
-  // console.log(watch("siteName"));
+  const password = watch("password");
 
   return (
     <div>
@@ -95,7 +75,7 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
           as="div"
           className="relative z-10"
           initialFocus={cancelButtonRef}
-          onClose={setShowNewSiteCreate}
+          onClose={setShowJoinSiteForm}
         >
           <Transition.Child
             as={Fragment}
@@ -124,13 +104,13 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
                   <button
                     type="button"
                     className="absolute right-5 top-5 text-gray-900 hover:text-gray-300 font-bold bg-gray-200"
-                    onClick={() => setShowNewSiteCreate(false)}
+                    onClick={() => setShowJoinSiteForm(false)}
                   >
                     <span className="sr-only">Close</span>
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                   <div className="bg-white py-5 border-b border-gray-200 text-center text-base font-semibold">
-                    Create New Site
+                    Join Site
                   </div>
                   <div className="bg-white px-4 pb-4 sm:pb-4">
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -142,22 +122,45 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
                               name="siteName"
                               type="text"
                               className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-0 ring-inset ring-white-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white-600 sm:text-sm sm:leading-6"
-                              placeholder="Type site name...."
+                              placeholder="Enter site name..."
                               {...register("siteName", {
-                                required: true,
-                                pattern: /^[a-zA-Z-]+$/,
+                                required: "Site name is required",
+                                pattern: {
+                                  value: /^[a-zA-Z-]+$/,
+                                  message:
+                                    "Site name must contain only alphabets and hyphens, no white spaces or special characters.",
+                                },
                               })}
                             />
-                            {errors.siteName?.type === "pattern" && (
+                            {errors.siteName && (
                               <Alert className="mt-3" severity="error">
-                                Site name must contain only alphabets and
-                                hyphens, and no white spaces or special
-                                characters.
+                                {errors.siteName.message}
+                              </Alert>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="col-span-full">
+                          <div className="mt-2">
+                            <input
+                              id="password"
+                              name="password"
+                              type="password"
+                              className="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-0 ring-inset ring-white-300 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-white-600 sm:text-sm sm:leading-6"
+                              placeholder="Enter password..."
+                              {...register("password", {
+                                required: "Password is required",
+                              })}
+                            />
+                            {errors.password && (
+                              <Alert className="mt-3" severity="error">
+                                {errors.password.message}
                               </Alert>
                             )}
                           </div>
                         </div>
                       </div>
+
                       {loading ? (
                         <div className="mt-6">
                           <ButtonSpinner />
@@ -166,18 +169,21 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
                         <button
                           type="submit"
                           className={
-                            siteName
+                            siteName && password
                               ? "block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-6 mb-2"
                               : "block w-full rounded-md bg-gray-200 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-6 mb-2"
                           }
-                          disabled={siteName ? false : true}
+                          disabled={!siteName || !password}
                         >
-                          Create
+                          Join
                         </button>
                       )}
 
                       {message && (
-                        <Alert className="my-2" severity="error">
+                        <Alert
+                          className="my-2"
+                          severity={success ? "success" : "error"}
+                        >
                           <strong>{message}</strong>
                         </Alert>
                       )}
@@ -193,4 +199,4 @@ const NewSiteCreate = ({ profile, setShowNewSiteCreate }) => {
   );
 };
 
-export default NewSiteCreate;
+export default JoinSiteForm;

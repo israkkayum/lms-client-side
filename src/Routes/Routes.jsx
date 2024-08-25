@@ -7,6 +7,7 @@ import PrivateRoute from "./PrivateRoute";
 import MyLearning from "../Layout/MyLearning";
 import SettingsHome from "../pages/Settings/SettingsHome/SettingsHome";
 import PageNotFound from "../pages/Shared/PageNotFound/PageNotFound";
+import MySites from "../pages/MySites/MySites";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +33,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "profile-settings",
-        element: <PrivateRoute>{<SettingsHome></SettingsHome>}</PrivateRoute>,
+        element: (
+          <PrivateRoute>
+            <SettingsHome></SettingsHome>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "my-sites",
+        element: (
+          <PrivateRoute>
+            <MySites></MySites>
+          </PrivateRoute>
+        ),
       },
     ],
   },

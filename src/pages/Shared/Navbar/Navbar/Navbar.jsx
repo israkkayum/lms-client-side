@@ -9,7 +9,8 @@ import {
 import { NavLink } from "react-router-dom";
 import useAuth from "../../../../hooks/useAuth";
 import useProfile from "../../../../hooks/useProfile";
-import NewSiteCreate from "../../../../components/NewSiteCreate/NewSiteCreate";
+import CreateSiteForm from "../../../../components/CreateSiteForm/CreateSiteForm";
+import JoinSiteForm from "../../../../components/JoinSiteForm/JoinSiteForm";
 
 const navigation = {
   pages: [
@@ -28,7 +29,8 @@ const Navbar = () => {
   const { user, logOut } = useAuth();
   const [profile] = useProfile();
   const [open, setOpen] = useState(false);
-  const [showNewSiteCreate, setShowNewSiteCreate] = useState(false);
+  const [showCreateSiteForm, setShowCreateSiteForm] = useState(false);
+  const [showJoinSiteForm, setShowJoinSiteForm] = useState(false);
 
   const handleLogOut = () => {
     logOut()
@@ -42,10 +44,16 @@ const Navbar = () => {
 
   return (
     <div className="bg-white">
-      {showNewSiteCreate && (
-        <NewSiteCreate
+      {showCreateSiteForm && (
+        <CreateSiteForm
           profile={profile}
-          setShowNewSiteCreate={setShowNewSiteCreate}
+          setShowCreateSiteForm={setShowCreateSiteForm}
+        />
+      )}
+      {showJoinSiteForm && (
+        <JoinSiteForm
+          profile={profile}
+          setShowJoinSiteForm={setShowJoinSiteForm}
         />
       )}
       {/* Mobile menu */}
@@ -154,13 +162,16 @@ const Navbar = () => {
                     {profile?.profileType == "teacher" ? (
                       <button
                         className="flex items-center gap-2 px-3 py-1.5 text-sm text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700"
-                        onClick={() => setShowNewSiteCreate(true)}
+                        onClick={() => setShowCreateSiteForm(true)}
                       >
                         <PlusIcon class="h-5 w-5 text-white" />
                         New Site
                       </button>
                     ) : (
-                      <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700">
+                      <button
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-white duration-150 bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700"
+                        onClick={() => setShowJoinSiteForm(true)}
+                      >
                         <PlusIcon class="h-5 w-5 text-white" />
                         Join
                       </button>
