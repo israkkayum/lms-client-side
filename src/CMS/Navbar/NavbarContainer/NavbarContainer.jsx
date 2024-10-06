@@ -1,5 +1,6 @@
 // import { Navigate, useLocation } from "react-router-dom";
 import AdministratorRoute from "../../../Routes/AdministratorRoute";
+import JoinedRoute from "../../../Routes/JoinedRoute";
 import Navbar from "../Navbar/Navbar";
 import NavbarEditor from "../NavbarEditor/NavbarEditor";
 
@@ -15,7 +16,9 @@ const NavbarContainer = ({ siteData, profile }) => {
         </AdministratorRoute>
       ) : (
         // Show a read-only version for students
-        <Navbar siteId={siteId} />
+        <JoinedRoute>
+          <Navbar siteId={siteId} />
+        </JoinedRoute>
       )}
     </div>
   );

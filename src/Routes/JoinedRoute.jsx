@@ -1,28 +1,23 @@
 import { Navigate, useLocation, useParams } from "react-router-dom";
-import Spinner from "../pages/Shared/Spinner/Spinner";
-import useSite from "../hooks/useSite";
-// import useProfile from "../hooks/useProfile";
+import useCheckMembership from "../hooks/useCheckMembership";
 import useAuth from "../hooks/useAuth";
+import Spinner from "../pages/Shared/Spinner/Spinner";
 
 const JoinedRoute = ({ children }) => {
   const location = useLocation();
   const { siteName } = useParams();
-
-  const [siteData, isLoading] = useSite(siteName);
   const { user } = useAuth();
-  //   const [profile, isLoadingProfile] = useProfile();
+  const [isMember, isLoading] = useCheckMembership(siteName, user?.email);
 
-  if (isLoading || !user?.email) {
-    return <Spinner></Spinner>;
+  if (isLoading) return <Spinner></Spinner>;
+
+  if (!isMember) {
+    return (
+      <Navigate to="/my-institutions" state={{ from: location }} replace />
+    );
   }
 
-  if (siteData?.createdBy == user?.email) {
-    return children;
-  }
-
-  return (
-    <Navigate to={`/${siteName}`} state={{ from: location }} replace></Navigate>
-  );
+  return children;
 };
 
 export default JoinedRoute;
