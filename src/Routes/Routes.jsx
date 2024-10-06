@@ -4,13 +4,14 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
-import MyLearning from "../Layout/MyLearning";
 import SettingsHome from "../pages/Settings/SettingsHome/SettingsHome";
 import PageNotFound from "../pages/Shared/PageNotFound/PageNotFound";
 import MySites from "../pages/MySites/MySites";
 import MyInstitutions from "../pages/MyInstitutions/MyInstitutions";
 import TeacherRoute from "./TeacherRoute";
 import StudentRoute from "./StudentRoute";
+import AdminSettings from "../CMS/Settings/AdminSettings/AdminSettings";
+import Site from "../Layout/Site";
 
 export const router = createBrowserRouter([
   {
@@ -65,9 +66,19 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "my-learning",
-    element: <MyLearning></MyLearning>,
-    children: [],
+    path: "/:siteName",
+    element: (
+      <PrivateRoute>
+        <Site></Site>
+      </PrivateRoute>
+    ),
+    errorElement: <PageNotFound />,
+    children: [
+      {
+        path: "admin/settings",
+        element: <AdminSettings></AdminSettings>,
+      },
+    ],
   },
   // {
   //   path: "*",

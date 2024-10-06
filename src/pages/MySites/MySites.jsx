@@ -4,6 +4,7 @@ import Spinner from "../Shared/Spinner/Spinner";
 import useProfile from "../../hooks/useProfile";
 import { useState } from "react";
 import CreateSiteForm from "../../components/CreateSiteForm/CreateSiteForm";
+import { NavLink } from "react-router-dom";
 
 const MySites = () => {
   const [sites, isLoading] = useSites();
@@ -96,12 +97,12 @@ const MySites = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{item.date}</td>
                     <td className="text-right px-6 whitespace-nowrap">
-                      <a
-                        href="javascript:void()"
+                      <NavLink
+                        to={`/${item.siteName}`}
                         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
                       >
                         Manage
-                      </a>
+                      </NavLink>
                       <button
                         href="javascript:void()"
                         className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"

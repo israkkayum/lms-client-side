@@ -4,6 +4,7 @@ import useProfile from "../../hooks/useProfile";
 import { useState } from "react";
 import useJoinedSites from "../../hooks/useJoinedSites";
 import JoinSiteForm from "../../components/JoinSiteForm/JoinSiteForm";
+import { NavLink } from "react-router-dom";
 
 const MyInstitutions = () => {
   const [joinedSites, isLoading] = useJoinedSites();
@@ -96,12 +97,12 @@ const MyInstitutions = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{item.date}</td>
                     <td className="text-right px-6 whitespace-nowrap">
-                      <a
-                        href="javascript:void()"
+                      <NavLink
+                        to={`/${item.siteName}`}
                         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
                       >
                         View
-                      </a>
+                      </NavLink>
                       <button
                         href="javascript:void()"
                         className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
