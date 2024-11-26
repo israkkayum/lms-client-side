@@ -21,7 +21,7 @@ const Site = () => {
   return (
     <div>
       <NavbarContainer siteData={siteData} profile={profile}></NavbarContainer>
-      <Outlet></Outlet>
+      <Outlet context={{ siteData, profile }}></Outlet>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import useSite from "../hooks/useSite";
 // import useProfile from "../hooks/useProfile";
 import useAuth from "../hooks/useAuth";
 
-const AdministratorRoute = ({ children }) => {
+const SiteAdminRoute = ({ children }) => {
   const location = useLocation();
   const { siteName } = useParams();
 
@@ -27,4 +27,4 @@ const AdministratorRoute = ({ children }) => {
   );
 };
 
-export default AdministratorRoute;
+export default SiteAdminRoute;

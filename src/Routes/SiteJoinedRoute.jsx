@@ -3,7 +3,7 @@ import useCheckMembership from "../hooks/useCheckMembership";
 import useAuth from "../hooks/useAuth";
 import Spinner from "../pages/Shared/Spinner/Spinner";
 
-const JoinedRoute = ({ children }) => {
+const SiteJoinedRoute = ({ children }) => {
   const location = useLocation();
   const { siteName } = useParams();
   const { user } = useAuth();
@@ -20,4 +20,4 @@ const JoinedRoute = ({ children }) => {
   return children;
 };
 
-export default JoinedRoute;
+export default SiteJoinedRoute;

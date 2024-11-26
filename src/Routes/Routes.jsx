@@ -10,8 +10,10 @@ import MySites from "../pages/MySites/MySites";
 import MyInstitutions from "../pages/MyInstitutions/MyInstitutions";
 import TeacherRoute from "./TeacherRoute";
 import StudentRoute from "./StudentRoute";
-import AdminSettings from "../CMS/Settings/AdminSettings/AdminSettings";
 import Site from "../Layout/Site";
+import SiteHomeSettings from "../CMS/Settings/SiteHomeSettings/SiteHomeSettings";
+import CoursesContainer from "../CMS/Courses/CoursesContainer/CoursesContainer";
+import SiteAdminRoute from "./SiteAdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -75,8 +77,16 @@ export const router = createBrowserRouter([
     errorElement: <PageNotFound />,
     children: [
       {
-        path: "admin/settings",
-        element: <AdminSettings></AdminSettings>,
+        path: "site-home-settings",
+        element: (
+          <SiteAdminRoute>
+            <SiteHomeSettings></SiteHomeSettings>
+          </SiteAdminRoute>
+        ),
+      },
+      {
+        path: "my-courses",
+        element: <CoursesContainer></CoursesContainer>,
       },
     ],
   },

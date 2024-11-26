@@ -16,8 +16,8 @@ export default function Login() {
     // formState: { errors },
   } = useForm();
 
-  const { resetPassword } = useAuth();
-  const { signIn } = useAuth();
+  const { signIn, resetPassword } = useAuth();
+
   const navigate = useNavigate();
   const location = useLocation();
 
