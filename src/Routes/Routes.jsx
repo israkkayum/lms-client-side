@@ -14,6 +14,7 @@ import Site from "../Layout/Site";
 import SiteHomeSettings from "../CMS/Settings/SiteHomeSettings/SiteHomeSettings";
 import CoursesContainer from "../CMS/Courses/CoursesContainer/CoursesContainer";
 import SiteAdminRoute from "./SiteAdminRoute";
+import CreateCourse from "../CMS/Courses/CreateCourse/CreateCourse";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,14 @@ export const router = createBrowserRouter([
       {
         path: "my-courses",
         element: <CoursesContainer></CoursesContainer>,
+      },
+      {
+        path: "create-course",
+        element: (
+          <SiteAdminRoute>
+            <CreateCourse></CreateCourse>
+          </SiteAdminRoute>
+        ),
       },
     ],
   },

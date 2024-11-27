@@ -117,7 +117,7 @@ const SiteHomeSettings = () => {
               <div className="col-span-full">
                 <label
                   htmlFor="siteSummary"
-                  className="block text-sm font-medium text-gray-900"
+                  className="mb-2.5 block text-sm font-medium text-gray-900"
                 >
                   Site Home Summary
                 </label>

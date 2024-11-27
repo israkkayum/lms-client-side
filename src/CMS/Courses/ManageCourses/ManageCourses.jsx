@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 const ManageCourses = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 mt-20">
@@ -10,8 +12,8 @@ const ManageCourses = () => {
             Create courses and manage all functionalities.
           </p>
         </div>
-        <a
-          href="javascript:void(0)"
+        <NavLink
+          to="../create-course"
           className="inline-flex items-center justify-center gap-1 py-2 px-3 mt-2 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg sm:mt-0"
         >
           <svg
@@ -29,7 +31,7 @@ const ManageCourses = () => {
             />
           </svg>
           New Courses
-        </a>
+        </NavLink>
       </div>
     </div>
   );
