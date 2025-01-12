@@ -3,10 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "./useAuth";
 import useAxiosSecure from "./useAxiosSecure";
+import Spinner from "../pages/Shared/Spinner/Spinner";
 
 const useProfile = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+
+  if (!user?.email) {
+    <Spinner />;
+  }
 
   const { isLoading, data: profile = {} } = useQuery({
     queryKey: ["profile", user?.email],

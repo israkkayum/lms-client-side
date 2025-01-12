@@ -7,7 +7,7 @@ const useSite = (siteName) => {
   const axiosSecure = useAxiosSecure();
 
   const { data: siteData = {}, isLoading } = useQuery({
-    queryKey: ["siteDetails", siteName],
+    queryKey: ["siteData", siteName],
     queryFn: async () => {
       const response = await axiosSecure.get(`/sites/by-name/${siteName}`);
       return response.data;

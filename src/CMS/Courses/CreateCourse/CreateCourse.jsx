@@ -40,6 +40,7 @@ const CreateCourse = () => {
       );
       formData.append("thumbnail", thumbnail);
       formData.append("origin", siteData?._id);
+      formData.append("date", new Date().toDateString());
 
       const response = await axiosPublic.post("/courses", formData);
       if (response.data.acknowledged) {
