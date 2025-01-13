@@ -1,10 +1,10 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import EditContent from "../EditContent/EditContent";
 import { useParams } from "react-router-dom";
-import useCourse from "../../../hooks/useCourse";
+// import useCourse from "../../../hooks/useCourse";
 const EditCourse = () => {
   const { courseId } = useParams();
-  const [course, isLoading] = useCourse(courseId);
+  // const [course, isLoading] = useCourse(courseId);
   // console.log(course);
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8 mt-8">
@@ -33,7 +33,7 @@ const EditCourse = () => {
 
         <Tabs.Content className="py-6" value="contents">
           <p className="text-xs leading-normal">
-            <EditContent course={course} isLoading={isLoading} />
+            <EditContent courseId={courseId} />
           </p>
         </Tabs.Content>
         <Tabs.Content className="py-6" value="settings">
