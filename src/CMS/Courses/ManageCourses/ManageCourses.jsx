@@ -63,7 +63,7 @@ const ManageCourses = ({ siteData }) => {
                 </div>
                 <div className="px-6 py-4">
                   <NavLink
-                    to="../edit-course"
+                    to={`../edit-course/${course._id}`}
                     className="font-semibold text-lg inline-block hover:text-indigo-600 transition duration-500 ease-in-out"
                   >
                     {course.courseName}

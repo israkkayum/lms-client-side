@@ -99,7 +99,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "edit-course",
+        path: "edit-course/:courseId",
         element: (
           <SiteAdminRoute>
             <EditCourse />
