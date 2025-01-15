@@ -79,6 +79,7 @@ const SectionsList = ({
                 }
               >
                 <EditableText
+                  key={lesson.lessonId}
                   value={lesson.name}
                   onChange={(newName) =>
                     onRenameLesson(section.sectionId, lesson.lessonId, newName)

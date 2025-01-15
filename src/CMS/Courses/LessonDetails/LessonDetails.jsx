@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import Video from "../contents/Video";
 
 const LessonDetails = ({ lesson }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeOption, setActiveOption] = useState(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -25,6 +27,85 @@ const LessonDetails = ({ lesson }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const renderOptionContent = () => {
+    switch (activeOption) {
+      case "video":
+        return <Video lesson={lesson} />;
+
+      case "assignment":
+        return (
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h3 className="text-lg font-medium mb-2">Create Assignment</h3>
+            <textarea
+              placeholder="Write instructions..."
+              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
+              rows="4"
+            ></textarea>
+            <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+              Save
+            </button>
+          </div>
+        );
+
+      case "articles":
+        return (
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h3 className="text-lg font-medium mb-2">Write Article</h3>
+            <textarea
+              placeholder="Write your article here..."
+              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
+              rows="6"
+            ></textarea>
+            <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+              Publish
+            </button>
+          </div>
+        );
+
+      case "resources":
+        return (
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h3 className="text-lg font-medium mb-2">Upload Resources</h3>
+            <input
+              type="file"
+              multiple
+              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
+            />
+            <button className="bg-yellow-500 text-white px-4 py-2 rounded-md">
+              Upload
+            </button>
+          </div>
+        );
+
+      case "quiz":
+        return (
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h3 className="text-lg font-medium mb-2">Create Quiz</h3>
+            <input
+              type="text"
+              placeholder="Enter Quiz Title"
+              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
+            />
+            <textarea
+              placeholder="Enter questions here..."
+              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
+              rows="4"
+            ></textarea>
+            <button className="bg-purple-500 text-white px-4 py-2 rounded-md">
+              Save Quiz
+            </button>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="text-gray-500 text-center my-10">
+            Select an option from the dropdown to get started.
+          </div>
+        );
+    }
+  };
 
   if (!lesson) {
     return (
@@ -69,13 +150,13 @@ const LessonDetails = ({ lesson }) => {
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"
-                      d="M8.99961 5.09961C9.49667 5.09961 9.89961 5.50255 9.89961 5.99961V11.9996C9.89961 12.4967 9.49667 12.8996 8.99961 12.8996C8.50255 12.8996 8.09961 12.4967 8.09961 11.9996V5.99961C8.09961 5.50255 8.50255 5.09961 8.99961 5.09961Z"
+                      d="M8.99961 5.09961C9.49667 5.09961 9.89961 5.50255 9.89961 5.99961V11.99961C9.89961 12.4967 9.49667 12.89961 8.99961 12.89961C8.50255 12.89961 8.09961 12.4967 8.09961 11.99961V5.99961C8.09961 5.50255 8.50255 5.09961 8.99961 5.09961Z"
                       fill="white"
                     />
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"
-                      d="M5.09961 8.99961C5.09961 8.50255 5.50255 8.09961 5.99961 8.09961H11.9996C12.4967 8.09961 12.8996 8.50255 12.8996 8.99961C12.8996 9.49667 12.4967 9.89961 11.9996 9.89961H5.99961C5.50255 9.89961 5.09961 9.49667 5.09961 8.99961Z"
+                      d="M5.09961 8.99961C5.09961 8.50255 5.50255 8.09961 5.99961 8.09961H11.99961C12.4967 8.09961 12.89961 8.50255 12.89961 8.99961C12.89961 9.49667 12.4967 9.89961 11.99961 9.89961H5.99961C5.50255 9.89961 5.09961 9.49667 5.09961 8.99961Z"
                       fill="white"
                     />
                   </svg>
@@ -86,11 +167,10 @@ const LessonDetails = ({ lesson }) => {
               {isOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg z-10">
                   <ul className="py-1 text-sm text-gray-700">
-                    {/* Video */}
                     <li>
                       <button
                         className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                        onClick={() => console.log("Video Clicked")}
+                        onClick={() => setActiveOption("video")}
                       >
                         <span className="mr-2">
                           <svg
@@ -111,12 +191,10 @@ const LessonDetails = ({ lesson }) => {
                         Video
                       </button>
                     </li>
-
-                    {/* Assignment */}
                     <li>
                       <button
                         className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                        onClick={() => console.log("Assignment Clicked")}
+                        onClick={() => setActiveOption("assignment")}
                       >
                         <span className="mr-2">
                           <svg
@@ -137,12 +215,10 @@ const LessonDetails = ({ lesson }) => {
                         Assignment
                       </button>
                     </li>
-
-                    {/* Articles */}
                     <li>
                       <button
                         className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                        onClick={() => console.log("Articles Clicked")}
+                        onClick={() => setActiveOption("articles")}
                       >
                         <span className="mr-2">
                           <svg
@@ -163,12 +239,10 @@ const LessonDetails = ({ lesson }) => {
                         Article
                       </button>
                     </li>
-
-                    {/* Resources */}
                     <li>
                       <button
                         className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                        onClick={() => console.log("Resources Clicked")}
+                        onClick={() => setActiveOption("resources")}
                       >
                         <span className="mr-2">
                           <svg
@@ -189,12 +263,10 @@ const LessonDetails = ({ lesson }) => {
                         Resources
                       </button>
                     </li>
-
-                    {/* Quiz */}
                     <li>
                       <button
                         className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                        onClick={() => console.log("Quiz Clicked")}
+                        onClick={() => setActiveOption("quiz")}
                       >
                         <span className="mr-2">
                           <svg
@@ -222,7 +294,8 @@ const LessonDetails = ({ lesson }) => {
           </div>
         </div>
 
-        <div className="space-y-4"></div>
+        {/* Content Section */}
+        <div className="space-y-4">{renderOptionContent()}</div>
       </div>
     </>
   );
