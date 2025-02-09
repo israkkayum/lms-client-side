@@ -16,6 +16,7 @@ import CoursesContainer from "../CMS/Courses/CoursesContainer/CoursesContainer";
 import SiteAdminRoute from "./SiteAdminRoute";
 import CreateCourse from "../CMS/Courses/CreateCourse/CreateCourse";
 import EditCourse from "../CMS/Courses/EditCourse/EditCourse";
+import HomePage from "../CMS/HomePage/HomePage";
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ export const router = createBrowserRouter([
     ),
     errorElement: <PageNotFound />,
     children: [
+      {
+        path: "",
+        element: <HomePage />,
+      },
       {
         path: "site-home-settings",
         element: (

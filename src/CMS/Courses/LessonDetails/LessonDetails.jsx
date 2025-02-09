@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import Video from "../contents/Video";
+import EditVideo from "../contents/EditVideo";
+import UploadVideo from "../contents/UploadVideo";
 
 const LessonDetails = ({ lesson }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeOption, setActiveOption] = useState(null);
+
+  useEffect(() => {
+    setActiveOption(null);
+  }, [lesson]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -31,7 +36,7 @@ const LessonDetails = ({ lesson }) => {
   const renderOptionContent = () => {
     switch (activeOption) {
       case "video":
-        return <Video lesson={lesson} />;
+        return <UploadVideo lesson={lesson} />;
 
       case "assignment":
         return (
@@ -131,6 +136,7 @@ const LessonDetails = ({ lesson }) => {
               <button
                 className="inline-flex items-center justify-center whitespace-nowrap rounded bg-indigo-500 px-5 py-[10px] text-sm font-medium text-white hover:bg-opacity-90"
                 onClick={toggleDropdown}
+                disabled={lesson.content ? true : false}
               >
                 Add New Item
                 <span className="pl-2">
@@ -295,7 +301,13 @@ const LessonDetails = ({ lesson }) => {
         </div>
 
         {/* Content Section */}
-        <div className="space-y-4">{renderOptionContent()}</div>
+        <div className="space-y-4">
+          {!lesson?.content ? (
+            <>{renderOptionContent()}</>
+          ) : (
+            <EditVideo lesson={lesson} />
+          )}
+        </div>
       </div>
     </>
   );

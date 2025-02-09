@@ -8,8 +8,7 @@ const navigation = {
     { name: "Home", href: "" },
     { name: "Courses", href: "my-courses" },
     { name: "Assignments", href: "my-assignments" },
-    { name: "Contents", href: "my-contents" },
-    { name: "Question bank", href: "question-bank" },
+    { name: "Resources", href: "my-resources" },
   ],
 };
 

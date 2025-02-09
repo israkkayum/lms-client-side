@@ -1,65 +1,80 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
-const Video = ({ lesson }) => {
-  const { register, handleSubmit, control, reset } = useForm();
+const UploadVideo = ({ lesson }) => {
+  const { register, handleSubmit, reset } = useForm();
   const courseId = lesson.courseId;
   const sectionId = lesson.sectionId;
   const lessonId = lesson.lessonId;
 
-  const [file, setFile] = useState(null); // Store the selected file
-  const [uploadProgress, setUploadProgress] = useState(0); // Upload progress
-  const [isUploading, setIsUploading] = useState(false); // Track upload status
+  const axiosPublic = useAxiosPublic();
+
+  const [file, setFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-
     if (selectedFile) {
-      // Restrict to only video files
       if (!selectedFile.type.startsWith("video/")) {
         alert("Please upload only video files.");
         return;
       }
-
-      // Set the file and start the upload process
       setFile(selectedFile);
       setUploadProgress(0);
-      setIsUploading(true);
-
-      simulateUpload();
     }
-  };
-
-  const simulateUpload = () => {
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          return 100;
-        }
-        return prev + 10; // Increase progress by 10%
-      });
-    }, 500); // Update progress every 500ms
   };
 
   const removeFile = () => {
     setFile(null);
     setUploadProgress(0);
     setIsUploading(false);
+    setUploadMessage("");
   };
 
-  const onSubmit = (data) => {
-    const formData = {
-      type: "video",
-      title: data.title,
-      file: file, // Use the uploaded file
-    };
-    console.log("Form Data: ", formData);
-    // Add your API request or further processing logic here
-    reset(); // Reset form after submission
-    setFile(null); // Clear file after submission
+  const onSubmit = async (data) => {
+    if (!file) {
+      alert("Please upload a video file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "video");
+    formData.append("title", data.title);
+
+    try {
+      setIsUploading(true);
+      setUploadMessage("");
+      const response = await axiosPublic.post(
+        `/course/${courseId}/section/${sectionId}/lesson/${lessonId}/video`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
+        }
+      );
+
+      setUploadMessage(response.data.message || "Upload successful!");
+      setFile(null);
+      reset();
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      setUploadMessage(
+        error.response?.data?.error || "An error occurred during upload."
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -107,7 +122,6 @@ const Video = ({ lesson }) => {
               <line x1="12" x2="12" y1="3" y2="15"></line>
             </svg>
           </span>
-
           <div className="mt-4 flex flex-wrap justify-center text-sm leading-6 text-gray-600">
             <span className="pe-1 font-medium text-gray-800">
               Drop your file here or
@@ -116,7 +130,6 @@ const Video = ({ lesson }) => {
               browse
             </span>
           </div>
-
           <p className="mt-1 text-xs text-gray-400">
             Pick a video file up to 2MB.
           </p>
@@ -206,23 +219,34 @@ const Video = ({ lesson }) => {
         </div>
       )}
 
-      {isUploading && uploadProgress === 100 && (
-        <p className="mt-4 text-green-600 text-sm">Upload complete!</p>
+      {uploadMessage && (
+        <p
+          className={`mt-4 text-sm ${
+            uploadMessage.includes("error") ? "text-red-600" : "text-green-600"
+          }`}
+        >
+          {uploadMessage}
+        </p>
       )}
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button type="button" className="text-sm/6 font-semibold text-gray-900">
+        <button
+          type="button"
+          onClick={removeFile}
+          className="text-sm/6 font-semibold text-gray-900"
+        >
           Cancel
         </button>
         <button
           type="submit"
+          disabled={isUploading}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Submit Lesson
+          {isUploading ? "Uploading..." : "Submit Lesson"}
         </button>
       </div>
     </form>
   );
 };
 
-export default Video;
+export default UploadVideo;
