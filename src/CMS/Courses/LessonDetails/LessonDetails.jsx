@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import EditVideo from "../contents/EditVideo";
 import UploadVideo from "../contents/UploadVideo";
+import UploadAssignment from "../contents/UploadAssignment";
+import EditAssignment from "../contents/EditAssignment";
+import UploadArticle from "../contents/UploadArticle";
+import EditArticle from "../contents/EditArticle";
+import UploadResources from "../contents/UploadResources";
+import EditResources from "../contents/EditResources";
+import UploadQuiz from "../contents/UploadQuiz";
+import EditQuiz from "../contents/EditQuiz";
 
 const LessonDetails = ({ lesson }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,69 +47,16 @@ const LessonDetails = ({ lesson }) => {
         return <UploadVideo lesson={lesson} />;
 
       case "assignment":
-        return (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <h3 className="text-lg font-medium mb-2">Create Assignment</h3>
-            <textarea
-              placeholder="Write instructions..."
-              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
-              rows="4"
-            ></textarea>
-            <button className="bg-red-500 text-white px-4 py-2 rounded-md">
-              Save
-            </button>
-          </div>
-        );
+        return <UploadAssignment lesson={lesson} />;
 
       case "articles":
-        return (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <h3 className="text-lg font-medium mb-2">Write Article</h3>
-            <textarea
-              placeholder="Write your article here..."
-              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
-              rows="6"
-            ></textarea>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md">
-              Publish
-            </button>
-          </div>
-        );
+        return <UploadArticle lesson={lesson} />;
 
       case "resources":
-        return (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <h3 className="text-lg font-medium mb-2">Upload Resources</h3>
-            <input
-              type="file"
-              multiple
-              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
-            />
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded-md">
-              Upload
-            </button>
-          </div>
-        );
+        return <UploadResources lesson={lesson} />;
 
       case "quiz":
-        return (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <h3 className="text-lg font-medium mb-2">Create Quiz</h3>
-            <input
-              type="text"
-              placeholder="Enter Quiz Title"
-              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
-            />
-            <textarea
-              placeholder="Enter questions here..."
-              className="w-full p-2 mb-3 border border-gray-300 rounded-md"
-              rows="4"
-            ></textarea>
-            <button className="bg-purple-500 text-white px-4 py-2 rounded-md">
-              Save Quiz
-            </button>
-          </div>
-        );
+        return <UploadQuiz lesson={lesson} />;
 
       default:
         return (
@@ -304,9 +259,17 @@ const LessonDetails = ({ lesson }) => {
         <div className="space-y-4">
           {!lesson?.content ? (
             <>{renderOptionContent()}</>
-          ) : (
+          ) : lesson.content.type === "video" ? (
             <EditVideo lesson={lesson} />
-          )}
+          ) : lesson.content.type === "assignment" ? (
+            <EditAssignment lesson={lesson} />
+          ) : lesson.content.type === "article" ? (
+            <EditArticle lesson={lesson} />
+          ) : lesson.content.type === "resource" ? (
+            <EditResources lesson={lesson} />
+          ) : lesson.content.type === "quiz" ? (
+            <EditQuiz lesson={lesson} />
+          ) : null}
         </div>
       </div>
     </>
