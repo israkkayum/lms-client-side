@@ -1,6 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import EditContent from "../EditContent/EditContent";
 import { useParams } from "react-router-dom";
+import CourseSettings from "../CourseSettings/CourseSettings";
 // import useCourse from "../../../hooks/useCourse";
 const EditCourse = () => {
   const { courseId } = useParams();
@@ -38,7 +39,7 @@ const EditCourse = () => {
         </Tabs.Content>
         <Tabs.Content className="py-6" value="settings">
           <p className="text-xs leading-normal">
-            This is <b>settings</b> Tab
+            <CourseSettings courseId={courseId} />
           </p>
         </Tabs.Content>
       </Tabs.Root>
