@@ -5,7 +5,7 @@ import Navbar from "../Navbar/Navbar";
 import NavbarEditor from "../NavbarEditor/NavbarEditor";
 
 const NavbarContainer = ({ siteData, profile }) => {
-  const siteId = siteData?._id;
+  // const siteId = siteData?._id;
 
   return (
     <div>
@@ -17,7 +17,7 @@ const NavbarContainer = ({ siteData, profile }) => {
       ) : (
         // Show a read-only version for students
         <SiteJoinedRoute>
-          <Navbar siteId={siteId} />
+          <Navbar siteData={siteData} profile={profile} />
         </SiteJoinedRoute>
       )}
     </div>

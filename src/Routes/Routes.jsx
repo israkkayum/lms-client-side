@@ -17,6 +17,8 @@ import SiteAdminRoute from "./SiteAdminRoute";
 import CreateCourse from "../CMS/Courses/CreateCourse/CreateCourse";
 import EditCourse from "../CMS/Courses/EditCourse/EditCourse";
 import HomePage from "../CMS/HomePage/HomePage";
+import SiteJoinedRoute from "./SiteJoinedRoute";
+import Course from "../CMS/Courses/Course/Course";
 
 export const router = createBrowserRouter([
   {
@@ -109,6 +111,14 @@ export const router = createBrowserRouter([
           <SiteAdminRoute>
             <EditCourse />
           </SiteAdminRoute>
+        ),
+      },
+      {
+        path: "course/:courseId",
+        element: (
+          <SiteJoinedRoute>
+            <Course />
+          </SiteJoinedRoute>
         ),
       },
     ],
