@@ -4,7 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useForm, Controller } from "react-hook-form";
 
 const EditAssignment = ({ lesson }) => {
-  const { title, description } = lesson.content;
+  const { title, description, id } = lesson.content;
   const { courseId, sectionId, lessonId } = lesson;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -29,7 +29,12 @@ const EditAssignment = ({ lesson }) => {
     try {
       const response = await axiosPublic.patch(
         `/course/${courseId}/section/${sectionId}/lesson/${lessonId}/content`,
-        { title: data.title, description: data.description, type: "assignment" }
+        {
+          title: data.title,
+          description: data.description,
+          type: "assignment",
+          id: id,
+        }
       );
 
       setMessage(response.data.message || "Assignment updated successfully!");

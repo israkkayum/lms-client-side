@@ -7,8 +7,7 @@ const navigation = {
   pages: [
     { name: "Home", href: "" },
     { name: "Courses", href: "my-courses" },
-    { name: "Assignments", href: "my-assignments" },
-    { name: "Resources", href: "my-resources" },
+    { name: "Grade", href: "my-grade" },
   ],
 };
 
@@ -166,33 +165,6 @@ const Navbar = ({ siteData, profile }) => {
                         <Menu.Item>
                           {({ active }) => (
                             <NavLink
-                              to="site-home-settings"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Settings
-                            </NavLink>
-                          )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                          {({ active }) => (
-                            <NavLink
-                              to="/profile-settings"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Grades
-                            </NavLink>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <NavLink
                               to="/profile-settings"
                               className={classNames(
                                 active ? "bg-gray-100" : "",
@@ -213,32 +185,6 @@ const Navbar = ({ siteData, profile }) => {
                               )}
                             >
                               Reports
-                            </NavLink>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <NavLink
-                              to="/profile-settings"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Participants
-                            </NavLink>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <NavLink
-                              to="/profile-settings"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Site Administration
                             </NavLink>
                           )}
                         </Menu.Item>

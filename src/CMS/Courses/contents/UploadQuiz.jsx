@@ -44,6 +44,7 @@ const UploadQuiz = ({ lesson }) => {
       const formData = {
         title: data.title,
         type: "quiz",
+        id: `quiz_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         questions: data.questions.map((q) => ({
           question: q.question,
           options: q.options.filter((option) => option.trim() !== ""),

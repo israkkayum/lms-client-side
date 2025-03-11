@@ -26,6 +26,10 @@ const UploadAssignment = ({ lesson }) => {
     formData.append("title", data.title);
     formData.append("type", "assignment");
     formData.append("description", data.description);
+    formData.append(
+      "id",
+      `assignment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    );
 
     try {
       setIsUploading(true);
@@ -141,7 +145,7 @@ const UploadAssignment = ({ lesson }) => {
           disabled={isUploading}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          {isUploading ? "Uploading..." : "Submit Assignment"}
+          {isUploading ? "Uploading..." : "Upload Assignment"}
         </button>
       </div>
     </form>

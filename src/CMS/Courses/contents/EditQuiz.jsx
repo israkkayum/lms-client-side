@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const EditQuiz = ({ lesson }) => {
-  const { title, questions } = lesson.content;
+  const { title, questions, id } = lesson.content;
   const { courseId, sectionId, lessonId } = lesson;
 
   const {
@@ -14,6 +14,7 @@ const EditQuiz = ({ lesson }) => {
   } = useForm({
     defaultValues: {
       title: title || "",
+      id: id,
       questions:
         questions?.length > 0
           ? questions.map((q) => ({
@@ -54,6 +55,7 @@ const EditQuiz = ({ lesson }) => {
       const formData = {
         title: data.title,
         type: "quiz",
+        id: id,
         questions: data.questions.map((q) => ({
           question: q.question,
           options: q.options.filter((option) => option.trim() !== ""),
