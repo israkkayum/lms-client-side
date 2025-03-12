@@ -1,6 +1,9 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { useState } from "react";
 
 const VideoContent = ({ content, onComplete }) => {
+  const [isCompleted, setIsCompleted] = useState(false);
+
   if (!content || !content.data) {
     return (
       <div className="text-gray-600 text-center p-4 bg-gray-50 rounded-lg">
@@ -10,9 +13,8 @@ const VideoContent = ({ content, onComplete }) => {
   }
 
   const handleComplete = () => {
-    if (window.confirm('Have you finished watching the video? This will mark the lesson as complete.')) {
-      onComplete();
-    }
+    onComplete();
+    setIsCompleted(true);
   };
 
   return (
@@ -28,12 +30,14 @@ const VideoContent = ({ content, onComplete }) => {
           <h3 className="text-2xl font-semibold text-gray-900">
             {content.title || "Video Lesson"}
           </h3>
-          <button
-            onClick={handleComplete}
-            className="mt-4 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors"
-          >
-            Mark as Complete
-          </button>
+          {!isCompleted && (
+            <button
+              onClick={handleComplete}
+              className="w-full bg-indigo-600 text-white mt-20 py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors"
+            >
+              Mark as Complete
+            </button>
+          )}
         </div>
       </div>
     </div>

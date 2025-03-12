@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const ResourceContent = ({ content, onComplete }) => {
+  const [isCompleted, setIsCompleted] = useState(false);
+
   if (!content || !content.files || content.files.length === 0) {
     return (
       <div className="text-gray-600 text-center p-4 bg-gray-50 rounded-lg">
@@ -11,7 +14,7 @@ const ResourceContent = ({ content, onComplete }) => {
 
   const handleDownload = (file) => {
     // Create a temporary link to trigger the download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = `data:${file.mimetype};base64,${file.data}`;
     link.download = file.filename;
     document.body.appendChild(link);
@@ -20,6 +23,7 @@ const ResourceContent = ({ content, onComplete }) => {
 
     // Mark the lesson as complete when a resource is downloaded
     onComplete();
+    setIsCompleted(true);
   };
 
   return (
@@ -94,6 +98,17 @@ const ResourceContent = ({ content, onComplete }) => {
           );
         })}
       </div>
+      {!isCompleted && (
+        <button
+          onClick={() => {
+            onComplete();
+            setIsCompleted(true);
+          }}
+          className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors"
+        >
+          Mark as Complete
+        </button>
+      )}
     </div>
   );
 };

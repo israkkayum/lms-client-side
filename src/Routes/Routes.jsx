@@ -16,9 +16,12 @@ import CoursesContainer from "../CMS/Courses/CoursesContainer/CoursesContainer";
 import SiteAdminRoute from "./SiteAdminRoute";
 import CreateCourse from "../CMS/Courses/CreateCourse/CreateCourse";
 import EditCourse from "../CMS/Courses/EditCourse/EditCourse";
-import HomePage from "../CMS/HomePage/HomePage";
 import SiteJoinedRoute from "./SiteJoinedRoute";
 import Course from "../CMS/Courses/Course/Course";
+import MyGrade from "../CMS/MyGrade/MyGrade";
+import HomePageContainer from "../CMS/HomePage/HomePageContainer";
+import Documentation from "../pages/Documentation/Documentation";
+import Forums from "../pages/Forums/Forums";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +36,14 @@ export const router = createBrowserRouter([
       {
         path: "home",
         element: <Home></Home>,
+      },
+      {
+        path: "documentation",
+        element: <Documentation />,
+      },
+      {
+        path: "forums",
+        element: <Forums />,
       },
       {
         path: "login",
@@ -83,7 +94,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <HomePage />,
+        element: <HomePageContainer />,
       },
       {
         path: "site-home-settings",
@@ -118,6 +129,14 @@ export const router = createBrowserRouter([
         element: (
           <SiteJoinedRoute>
             <Course />
+          </SiteJoinedRoute>
+        ),
+      },
+      {
+        path: "my-grade",
+        element: (
+          <SiteJoinedRoute>
+            <MyGrade />
           </SiteJoinedRoute>
         ),
       },

@@ -29,7 +29,11 @@ const StudentLessonDetails = ({ lesson, onComplete }) => {
         );
       case "quiz":
         return (
-          <QuizContent content={lesson.content} onComplete={handleComplete} />
+          <QuizContent
+            lesson={lesson}
+            content={lesson.content}
+            onComplete={handleComplete}
+          />
         );
       case "resource":
         return (

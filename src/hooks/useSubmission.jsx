@@ -7,10 +7,17 @@ const useSubmission = (assignmentId, userEmail) => {
   const fetchSubmission = async () => {
     if (!assignmentId || !userEmail) return null;
 
-    const response = await axiosPublic.get(
-      `/assignments/${assignmentId}/submission/${userEmail}`
-    );
-    return response.data;
+    try {
+      const response = await axiosPublic.get(
+        `/assignments/${assignmentId}/submission/${userEmail}`
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return null; // No submission found
+      }
+      throw error; // Re-throw other errors
+    }
   };
 
   const {

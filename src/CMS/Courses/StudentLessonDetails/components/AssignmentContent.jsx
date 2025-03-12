@@ -108,14 +108,28 @@ const AssignmentContent = ({ lesson, content, onComplete }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
       <div className="mx-auto w-full max-w-[800px]">
-        <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-          {content.title || "Assignment"}
-        </h3>
+        <div className="bg-white p-6 rounded-lg shadow-sm space-y-4 mb-6">
+          {/* Assignment Title */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600">
+              Assignment Title
+            </label>
+            <p className="text-lg font-medium text-gray-900 mt-1">
+              {content.title || "Assignment"}
+            </p>
+          </div>
 
-        <div
-          className="prose prose-lg max-w-none mb-8"
-          dangerouslySetInnerHTML={{ __html: content.description }}
-        />
+          {/* Assignment Description */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-2">
+              Assignment Description
+            </label>
+            <div
+              className="prose prose-lg max-w-none bg-gray-50 p-5 rounded-md border border-gray-300 mt-2 leading-relaxed-gray-800"
+              dangerouslySetInnerHTML={{ __html: content.description }}
+            />
+          </div>
+        </div>
 
         {loading ? (
           <div className="text-center p-4">Loading submission status...</div>
@@ -145,6 +159,28 @@ const AssignmentContent = ({ lesson, content, onComplete }) => {
                   </p>
                 </div>
               </div>
+              {submission.score !== undefined && (
+                <div className="border-b pb-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Score</p>
+                      <p className="text-base text-gray-900">
+                        {submission.score}/10
+                      </p>
+                    </div>
+                  </div>
+                  {submission.feedback && (
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-gray-500">
+                        Teachers Feedback
+                      </p>
+                      <p className="text-base text-gray-900 mt-1">
+                        {submission.feedback}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ) : (

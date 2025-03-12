@@ -1,80 +1,42 @@
-import LatestCourses from "./LatestCourses";
-
-const HomePage = () => {
+const HomePage = ({ siteData }) => {
   return (
-    <div className="max-w-screen-xl mx-auto px-4 md:px-8 mt-20">
-      <div className="items-start justify-between md:flex">
-        <div className="max-w-lg">
-          <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
-            Announcements
-          </h3>
-          {/* <p className="text-gray-600 mt-2">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </p> */}
-        </div>
-        <div className="mt-3 md:mt-0">
-          <a
-            href="javascript:void(0)"
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-          >
-            + Add announcement
-          </a>
-        </div>
-      </div>
+    <div className="container mx-auto px-4 py-16 max-w-7xl">
+      <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+        <h1 className="text-3xl font-bold mb-4">{siteData?.siteName}</h1>
+        <p className="text-gray-600 mb-4">{siteData?.description}</p>
 
-      <div className="flex justify-between p-4 rounded-md bg-blue-50 border border-blue-300 mt-10">
-        <div className="flex gap-3 sm:items-center">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-blue-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+        {siteData?.announcements && siteData.announcements.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold mb-6 border-b pb-2">
+              Announcements
+            </h2>
+            <div className="space-y-4">
+              {siteData.announcements.map((announcement, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {announcement.title}
+                    </h3>
+                    <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                      {new Date(announcement.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed">
+                    {announcement.content}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-          <p className="text-blue-600 sm:text-sm">
-            “The new semester begins on February 1st, 2025. Please ensure you
-            have completed all necessary enrollments and course registrations by
-            January 30th, 2025.”
-          </p>
-        </div>
+        )}
       </div>
-      <div className="flex justify-between p-4 rounded-md bg-blue-50 border border-blue-300 mt-5">
-        <div className="flex gap-3 sm:items-center">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-blue-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <p className="text-blue-600 sm:text-sm leading-10">
-            “The LMS platform will undergo maintenance on Saturday, January
-            20th, 2025, from 12:00 AM to 4:00 AM (UTC). During this time, the
-            platform will be temporarily unavailable. We apologize for any
-            inconvenience caused.”
-          </p>
-        </div>
-      </div>
-      <LatestCourses />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import useAxiosPublic from "../../../../hooks/useAxiosPublic";
 import { AuthContext } from "../../../../providers/AuthProvider";
 
-const QuizContent = ({ content, onComplete }) => {
+const QuizContent = ({ lesson, content, onComplete }) => {
   const [userAnswers, setUserAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(null);
@@ -88,6 +88,9 @@ const QuizContent = ({ content, onComplete }) => {
 
     try {
       const quizSubmission = {
+        courseId: lesson.courseId,
+        lessonId: lesson.id,
+        sectionId: lesson.sectionId,
         userId: user.email,
         quizId: content.id,
         score: score,

@@ -32,8 +32,10 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.51.4",
     "react-router-dom": "^6.23.1",
+    "recharts": "^2.15.1",
     "sort-by": "^1.2.0",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "sweetalert2": "^11.17.2"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.51.1",

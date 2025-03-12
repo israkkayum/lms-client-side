@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 import { Editor } from "@tinymce/tinymce-react";
+import AssignmentMarking from "./AssignmentMarking";
 import { useForm, Controller } from "react-hook-form";
 
 const EditAssignment = ({ lesson }) => {
   const { title, description, id } = lesson.content;
   const { courseId, sectionId, lessonId } = lesson;
+  const [showMarking, setShowMarking] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -188,42 +190,63 @@ const EditAssignment = ({ lesson }) => {
         </form>
       ) : (
         <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Assignment Title
-            </label>
-            <p className="text-gray-900">{title}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Assignment Description
-            </label>
-            <div
-              className="prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-          </div>
-
-          <div className="flex justify-end gap-3">
+          <div className="flex justify-end mb-4">
             <button
-              type="button"
-              onClick={enterEditMode}
+              onClick={() => setShowMarking(!showMarking)}
               className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
             >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMessage("");
-                setIsDeleting(true);
-              }}
-              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-            >
-              Delete
+              {showMarking ? "Back to Assignment" : "View Submissions"}
             </button>
           </div>
+
+          {showMarking ? (
+            <AssignmentMarking lesson={lesson} />
+          ) : (
+            <div>
+              <div className="bg-white p-6 rounded-lg shadow-sm space-y-4 mb-6">
+                {/* Assignment Title */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600">
+                    Assignment Title
+                  </label>
+                  <p className="text-lg font-medium text-gray-900 mt-1">
+                    {title}
+                  </p>
+                </div>
+
+                {/* Assignment Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-2">
+                    Assignment Description
+                  </label>
+                  <div
+                    className="prose prose-lg max-w-none bg-gray-50 p-5 rounded-md border border-gray-300 mt-2 leading-relaxed-gray-800"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={enterEditMode}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMessage("");
+                    setIsDeleting(true);
+                  }}
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
