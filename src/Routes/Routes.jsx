@@ -22,6 +22,10 @@ import MyGrade from "../CMS/MyGrade/MyGrade";
 import HomePageContainer from "../CMS/HomePage/HomePageContainer";
 import Documentation from "../pages/Documentation/Documentation";
 import Forums from "../pages/Forums/Forums";
+import Blogs from "../pages/Blogs/Blogs";
+import BlogDetails from "../pages/Blogs/BlogDetails";
+import CreateBlog from "../pages/Blogs/CreateBlog";
+import EditBlog from "../pages/Blogs/EditBlog";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +48,30 @@ export const router = createBrowserRouter([
       {
         path: "forums",
         element: <Forums />,
+      },
+      {
+        path: "blogs",
+        element: <Blogs />,
+      },
+      {
+        path: "blogs/:id",
+        element: <BlogDetails />,
+      },
+      {
+        path: "create-blog",
+        element: (
+          <PrivateRoute>
+            <CreateBlog />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "edit-blog/:id",
+        element: (
+          <PrivateRoute>
+            <EditBlog />
+          </PrivateRoute>
+        ),
       },
       {
         path: "login",
