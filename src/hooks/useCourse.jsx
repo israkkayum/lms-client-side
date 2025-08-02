@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
+import useOptimizedQuery from "./useOptimizedQuery";
 import { CACHE_KEYS } from "../utils/constants";
 
 const useCourse = (courseId) => {
@@ -10,21 +10,17 @@ const useCourse = (courseId) => {
     isLoading, 
     error,
     refetch 
-  } = useQuery({
+  } = useOptimizedQuery({
     queryKey: [CACHE_KEYS.COURSE, courseId],
     queryFn: async () => {
-      try {
-        const response = await axiosSecure.get(`/course/${courseId}`);
-        return response.data;
-      } catch (error) {
-        throw new Error(error.userMessage || "Failed to fetch course");
-      }
+      const response = await axiosSecure.get(`/course/${courseId}`);
+      return response.data;
     },
     enabled: !!courseId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    errorMessage: "Failed to load course details",
   });
 
-  return { courseData, isLoading, error, refetch };
+  return [courseData, isLoading, refetch, error];
 };
 
 export default useCourse;
