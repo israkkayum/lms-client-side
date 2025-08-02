@@ -1,21 +1,30 @@
-// api, axios (axios secure), tan stack
-
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
+import { CACHE_KEYS } from "../utils/constants";
 
 const useCourse = (courseId) => {
   const axiosSecure = useAxiosSecure();
 
-  const { data: courseData = {}, isLoading } = useQuery({
-    queryKey: ["courseData", courseId],
+  const { 
+    data: courseData = {}, 
+    isLoading, 
+    error,
+    refetch 
+  } = useQuery({
+    queryKey: [CACHE_KEYS.COURSE, courseId],
     queryFn: async () => {
-      const response = await axiosSecure.get(`/course/${courseId}`);
-      return response.data;
+      try {
+        const response = await axiosSecure.get(`/course/${courseId}`);
+        return response.data;
+      } catch (error) {
+        throw new Error(error.userMessage || "Failed to fetch course");
+      }
     },
-    enabled: !!courseId, // Only enable this query if user.email exists
+    enabled: !!courseId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  return [courseData, isLoading];
+  return { courseData, isLoading, error, refetch };
 };
 
 export default useCourse;
